@@ -10,6 +10,7 @@ export const GlobalStyle = createGlobalStyle`
     --text-body: #969CB3;
     --shape: #FFFFFF
 }
+
 *{
     margin: 0;
     padding: 0;
