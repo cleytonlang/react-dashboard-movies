@@ -1,6 +1,35 @@
 import { Container } from "./style";
+import getData from "../../service/api";
+import toast, { Toaster } from "react-hot-toast";
 import { Card, Flex, AreaChart, BarChart } from "@tremor/react";
+import { useEffect, useState } from "react";
+
 export function MoviesCharts() {
+  const [certificationsList, setCertificationsList]: any = useState([]);
+
+  async function loadCertifications() {
+    getData("/certification/movie/list")
+      .then((response) => response.json())
+      .then(({ certifications }: any) => {
+        const certif = Object.entries(certifications).map(
+          (certification: any) => ({
+            name: certification[0],
+            "Number of certifications by Countries": certification[1].length,
+          })
+        );
+        setCertificationsList(certif);
+      })
+      .catch((error) => {
+        toast.error(
+          "Problem with the free API we use to find certifications, please try again later!"
+        );
+      });
+  }
+
+  useEffect(() => {
+    loadCertifications();
+  }, []);
+
   const chartdata = [
     {
       date: "Jan 22",
@@ -38,33 +67,6 @@ export function MoviesCharts() {
     return "$ " + Intl.NumberFormat("us").format(number).toString();
   };
 
-  const chartdata1 = [
-    {
-      name: "Amphibians",
-      "Number of threatened species": 2488,
-    },
-    {
-      name: "Birds",
-      "Number of threatened species": 1445,
-    },
-    {
-      name: "Crustaceans",
-      "Number of threatened species": 743,
-    },
-    {
-      name: "Birds2",
-      "Number of threatened species": 1445,
-    },
-    {
-      name: "Crustaceans2",
-      "Number of threatened species": 743,
-    },
-  ];
-
-  const dataFormatter1 = (number: number) => {
-    return "$ " + Intl.NumberFormat("us").format(number).toString();
-  };
-
   return (
     <Container>
       <Flex spaceX="space-x-5">
@@ -79,20 +81,21 @@ export function MoviesCharts() {
             marginTop="mt-4"
           />
         </Card>
-
+      </Flex>
+      <Flex spaceX="space-x-5">
         <Card>
           <BarChart
-            data={chartdata1}
+            data={certificationsList}
             dataKey="name"
             height="h-80"
-            categories={["Number of threatened species"]}
+            categories={["Number of certifications by Countries"]}
             colors={["blue"]}
-            valueFormatter={dataFormatter1}
             marginTop="mt-6"
             yAxisWidth="w-12"
           />
         </Card>
       </Flex>
+      <Toaster />
     </Container>
   );
 }

@@ -1,4 +1,6 @@
-import axios from "axios";
-export const api = axios.create({
-  baseURL: "https://main.d3ii1zge1gcr5q.amplifyapp.com/api",
-});
+export default async function getData(url: string) {
+  const data: any = await fetch(
+    `https://api.themoviedb.org/3${url}?api_key=7989dca5c23c2723160af19f9234a5a9`
+  );
+  return data;
+}
